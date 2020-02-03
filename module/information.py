@@ -2,8 +2,10 @@
 # -*- coding:utf-8 -*-
 
 import discord
+import csv
 import requests
 from bs4 import BeautifulSoup
+from module.timeout import *
 
 def achievement(msg, data, i):  # 업적
     output = "";
@@ -91,39 +93,127 @@ def information(msg, data, i):  # 무릉, 더시드
                            color=0x0000ff)
     return output
 
+def info(msg, reboot):
+    file = "module/database/level/level.csv"
+    data = 0.0
+    if reboot == 0:
+        url = 'https://maplestory.nexon.com/Ranking/World/Total?c=%s' % msg[1]
+    else:
+        url = 'https://maplestory.nexon.com/Ranking/World/Total?c=%s&w=254' % msg[1]
+        print(msg[1])
+    url = requests.get(url)
+    html = url.content
+    soup = BeautifulSoup(html, 'html.parser')
+    try:
+        finder = soup.find('tr', {'class':'search_com_chk'})
+        inside = finder.find_all('td')
+        allrank = int(inside[0].find('p').get_text()) # space doesn't get removed with rstrip()
+        image = inside[1].find('span').find('img').get('src').replace('/180','')
+        world = inside[1].find('dl').find('dt').find('a').find('img').get('src').split('world_icon/', 1)[1]
+
+        worldlist = {'icon_2.png': 'Reboot 2', 'icon_3.png': 'Reboot', 'icon_4.png': 'Aurora',
+                    'icon_5.png': 'Red', 'icon_6.png': 'Enosis', 'icon_7.png': 'Union',
+                    'icon_8.png': 'Scania', 'icon_9.png': 'Luna', 'icon_10.png': 'Zenith',
+                    'icon_11.png': 'Croa', 'icon_12.png': 'Bera', 'icon_13.png':'Elysium',
+                    'icon_14.png': 'Arcane', 'icon_15.png': 'Nova', 'icon_16.png': 'Burning',
+                    'icon_17.png': 'Burning 2'}
+
+        for i in worldlist:
+            if world in worldlist:
+                world = worldlist[world]
+                break
+            else:
+                world = "unknown"
+                i = i + 1
+
+        job = inside[1].find("dd").get_text().rsplit('/', 1)[1]
+        level = inside[2].get_text()
+        exp = inside[3].get_text()
+        pop = inside[4].get_text()
+        guild = inside[5].get_text()
+
+        now_level = level
+        now_level = now_level[3:]
+
+        with open(file, newline='', encoding="utf-8") as database:
+            freader = csv.reader(database)
+            for row_list in freader:
+                station_name = row_list[0]
+                if station_name.startswith(now_level):
+                    experience_temp = int(row_list[1])
+
+            temp = exp
+            temp = temp.replace(",", "")
+            now_experience = int(temp)
+            now_level = int(now_level)
+
+            if now_level < 275:
+                perc = now_experience / experience_temp * 100
+                data = '(%3.2f%%)' % (perc)
+
+        output = discord.Embed(title="KMS Profile lookup", description='Profile data for %s' % (msg[1]))
+        output.add_field(name ="Name", value = '%s' % (msg[1]), inline = True)
+        output.add_field(name ="Level", value = "%s" % (level), inline = True)
+        if guild != "":
+            output.add_field(name ="Guild", value = "%s" % (guild), inline = True)
+        else:
+            output.add_field(name ="Guild", value = "None", inline = True)
+        if now_level > 235:
+            output.add_field(name ="EXP", value = "%s%s" % (exp, data), inline = True)
+        else:
+            output.add_field(name ="EXP", value = "%s" % (exp), inline = True)
+        output.add_field(name ="Overall Rank", value = "%s" % (allrank), inline = True)
+        output.add_field(name ="Server", value = "%s" % (world), inline = True)
+        output.add_field(name ="Class", value = "%s" % (job), inline = True)
+        output.set_thumbnail(url=image)
+        return output
+    except Exception as e:
+        print(e)
+        if reboot == 0:
+            return info(msg, 1)
+        else:
+            output = discord.Embed(title="Warning!!!", description='No result.', color=0xff0000)
+            output.set_footer(text="Please check your character name, It's case-sensitive. Data is based on Offical KMS rank.")
+            return output
 
 def information_main(msg):
     if len(msg) is 2:
-        url = 'https://maple.gg/u/%s' % msg[1]
-        url = requests.get(url)
-        html = url.content
-        soup = BeautifulSoup(html, 'html.parser')
-        finder = soup.select(".bg-light")
-        if finder[0].select('h3')[0].text == '검색결과가 없습니다.':
-            output = discord.Embed(title="Warning!!!", description='No result.', color=0xff0000)
-            output.set_footer(text="Please check your character name, It's case-sensitive. Data is based on Maple.gg.")
+        if 'info' in msg[0]:
+            output = info(msg, 0)
         else:
-            data = soup.select("div.bg-light > section > div > div")
-            if 'dojo' in msg[0]:
-                if data[0].select('div')[2].text == '기록이 없습니다.':
-                    output = discord.Embed(title="Warning!!!", description='Cannot find the result.', color=0xff0000)
+            url = 'https://maple.gg/u/%s' % msg[1]
+            url = requests.get(url)
+            html = url.content
+            soup = BeautifulSoup(html, 'html.parser')
+            finder = soup.select(".bg-light")
+            if finder[0].select('h3')[0].text == '검색결과가 없습니다.':
+                output = discord.Embed(title="Warning!!!", description='No result.', color=0xff0000)
+                output.set_footer(text="Please check your character name, It's case-sensitive. Data is based on Maple.gg.")
+            else:
+                if 'info_gg' in msg[0]:
+                    output = information1(msg)
                 else:
-                    output = information(msg, data, 0)
-            elif 'oz' in msg[0]:
-                if data[1].select('div')[2].text == '기록이 없습니다.':
-                    output = discord.Embed(title="Warning!!!", description='Cannot find the result.', color=0xff0000)
-                else:
-                    output = information(msg, data, 1)
-            elif 'union' in msg[0]:
-                if data[2].select('div')[2].text == '기록이 없습니다.':
-                    output = discord.Embed(title="Warning!!!", description='Cannot find the result.', color=0xff0000)
-                else:
-                    output = union(msg, data, 2)
-            elif 'achievement' in msg[0]:
-                if data[3].select('div')[2].text == '기록이 없습니다.':
-                    output = discord.Embed(title="Warning!!!", description='Cannot find the result.', color=0xff0000)
-                else:
-                    output = achievement(msg, data, 3)
+                    data = soup.select("div.bg-light > section > div > div")
+                    if 'dojo' in msg[0]:
+                        if data[0].select('div')[2].text == '기록이 없습니다.':
+                            output = discord.Embed(title="Warning!!!", description='Cannot find the result.', color=0xff0000)
+                        else:
+                            output = information(msg, data, 0)
+                    elif 'oz' in msg[0]:
+                        if data[1].select('div')[2].text == '기록이 없습니다.':
+                            output = discord.Embed(title="Warning!!!", description='Cannot find the result.', color=0xff0000)
+                        else:
+                            output = information(msg, data, 1)
+                    elif 'union' in msg[0]:
+                        if data[2].select('div')[2].text == '기록이 없습니다.':
+                            output = discord.Embed(title="Warning!!!", description='Cannot find the result.', color=0xff0000)
+                        else:
+                            output = union(msg, data, 2)
+                    elif 'achievement' in msg[0]:
+                        if data[3].select('div')[2].text == '기록이 없습니다.':
+                            output = discord.Embed(title="Warning!!!", description='Cannot find the result.', color=0xff0000)
+                        else:
+                            output = achievement(msg, data, 3)
     else:
         output = discord.Embed(title="#dojo", description='You can use #dojo (ign) to find out your dojo floor.\nFor other information please use #oz, #union or #achievement.', color=0x00ff00)
         output.set_footer(text="Ex. #dojo RIRINT")

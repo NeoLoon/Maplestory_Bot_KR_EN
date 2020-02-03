@@ -50,7 +50,7 @@ async def on_message(message):
             or message.content.startswith("#seed")\
             or message.content.startswith("#oz")\
             or message.content.startswith("#union")\
-            or message.content.startswith("achievement"):
+            or message.content.startswith("#achievement"):
         msg = message.content.split(" ")
         output = information_main(msg)
         await message.channel.send(embed=output)

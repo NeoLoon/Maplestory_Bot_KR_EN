@@ -46,26 +46,26 @@ def simbol_main(msg):
                 msg2 = int(msg2)
                 if 0 < msg1 < 21 and 0 < msg2 < 21:
                     if msg1 > msg2:
-                        output = discord.Embed(title="Warning!!!", description='옵션 1은 옵션 2의 값을 넘을 수 없습니다!',
+                        output = discord.Embed(title="Warning!!!", description='Option 1 cannot exceed Option 2!',
                                                color=0xff0000)
                         return output
                     else:
-                        output = discord.Embed(title="Symbol %d → %d" % (msg1, msg2),
-                                               description='필요 성장치 : %s \n 소멸의 여로 심볼 강화 비용 : %s \n 츄레아모에 심볼 강화 비용 : %s'
+                        output = discord.Embed(title="Symbol Level %d → %d" % (msg1, msg2),
+                                               description='Total amount of symbols needed : %s \n Vanishing Journey Symbol Upgrade fee : %s \n Chuchu/Lach/Arcana/Morass/Esfera Symbol Upgrade fee : %s'
                                                            % (simbol1(msg1, msg2), simbol2(msg1, msg2),
                                                               simbol3(msg1, msg2)), color=0x0000ff)
                         return output
                 else:
-                    output = discord.Embed(title="Warning!!!", description='숫자 범위 초과!', color=0xff0000)
-                    output.set_footer(text="1이상, 20 이하의 정수만 입력해주세요!")
+                    output = discord.Embed(title="Warning!!!", description='Number out of bound!', color=0xff0000)
+                    output.set_footer(text="Input must be higher than 1 and lower than 21!")
                     return output
             else:
-                output = discord.Embed(title="Warning!!!", description='데이터는 정수값이어야 합니다!', color=0xff0000)
+                output = discord.Embed(title="Warning!!!", description='Input must be an integer!', color=0xff0000)
         else:
-            output = discord.Embed(title="Warning!!!", description='두 개의 숫자를 입력하세요!', color=0xff0000)
-            output.set_footer(text="#symbol (옵션1) (옵션2)")
+            output = discord.Embed(title="Warning!!!", description='You must input two integers!', color=0xff0000)
+            output.set_footer(text="#symbol (Start level) (Target level)")
     else:
-        output = discord.Embed(title="#symbol", description='#symbol (옵션1) (옵션2)을 입력하여 (옵션1)부터 (옵션2) 까지 심볼을 레벨업하는 데  필요한 심볼 갯수, 메소를 확인할 수 있습니다.', color=0x00ff00)
+        output = discord.Embed(title="#symbol", description='Type #symbol (Start level) (Target level) to see how much mesos and symbols are needed to upgrade the symbols.', color=0x00ff00)
         output.set_footer(text="#symbol 7 12")
 
     return output

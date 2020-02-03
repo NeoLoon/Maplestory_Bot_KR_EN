@@ -26,13 +26,13 @@ def additional_options1(msg, weapon):
                 if target1 == '1':
                     msg[2] = "1형"
                 title = row_list[1]
-                data = "기본 공격력 : " + row_list[2] + "\n\n"
+                data = "Base Attack : " + row_list[2] + "\n\n"
                 for k in range(1, len(row_list)-3):
                     data += "☆" * (len(row_list)-4-k) + "★" * k + " : " + row_list[k+2] + "\n"
                 image = "http://ec2-52-79-205-251.ap-northeast-2.compute.amazonaws.com/image/weapon/%s/%s.png" % (weapon, row_list[len(row_list) - 1])
     if not title:
-        output = discord.Embed(title="Warning!!!", description='올바른 옵션을 입력하세요.', color=0xff0000)
-        output.set_footer(text="#추옵 (셋트 종류) (무기 종류)")
+        output = discord.Embed(title="Warning!!!", description='Invalid inputs.', color=0xff0000)
+        output.set_footer(text="#flame (item set) (weapon)")
         if oneline is 0:
             with open(file, newline='', encoding='UTF-8') as database:
                 freader = csv.reader(database)
@@ -41,7 +41,7 @@ def additional_options1(msg, weapon):
                     target2 = row_list[1]
                     if target1 in target2:
                         title = row_list[1]
-                        data = "기본 공격력 : " + row_list[2] + "\n\n"
+                        data = "Base Attack : " + row_list[2] + "\n\n"
                         for k in range(1, len(row_list) - 3):
                             data += "☆" * (len(row_list) - 4 - k) + "★" * k + " : " + row_list[k + 2] + "\n"
                         image = "http://ec2-52-79-205-251.ap-northeast-2.compute.amazonaws.com/image/weapon/%s/%s.png" % (weapon, row_list[len(row_list) - 1])
@@ -56,9 +56,9 @@ def additional_options1(msg, weapon):
 
 def additional_options_main(msg):
     if len(msg) is 1:
-        output = discord.Embed(title="#추옵", description='#추옵(셋트명) (무기 종류)로 사용 가능합니다.\n무기의 단계별 추옵 수치를 확인하실 수 있습니다.',
+        output = discord.Embed(title="#flame", description='#추옵(셋트명) (무기 종류)로 사용 가능합니다.\n무기의 단계별 추옵 수치를 확인하실 수 있습니다.',
                                color=0x00ff00)
-        output.set_footer(text="예) #추옵 우트가르드 케인, #추옵 제로 1형, #추옵 해카세")
+        output.set_footer(text="예) #flame 우트가르드 케인, #flame 제로 1형, #추옵 해카세")
     else:
         if msg[1].startswith("알리")\
                 or msg[1].startswith("변질"):
@@ -104,6 +104,6 @@ def additional_options_main(msg):
         elif msg[1].startswith("앱솔"):
             output = additional_options1(msg, 'absolab')
         else:
-            output = discord.Embed(title="Warning!!!", description='올바른 옵션을 입력하세요.', color=0xff0000)
-            output.set_footer(text="#추옵 (셋트 종류) (무기 종류)")
+            output = discord.Embed(title="Warning!!!", description='Invalid inputs.', color=0xff0000)
+            output.set_footer(text="#flame (item set) (weapon)")
     return output

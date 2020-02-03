@@ -1,6 +1,8 @@
 # Maplestory_Bot_KR_EN
 A scuffed English version of Maplestory Bot KR
 
-Original version is made by 리린토(http://www.inven.co.kr/board/maple/2304/17370). Please follow original author's licensing rule (which I cannot find).
+MIT license, this is following original author's license
 
-No warrenty or any kind of support on this. Do whatever you want with it. Never tested. (contact the original owner if there is a problem)
+Original version is made by 리린토(https://github.com/RIRINTO/-python3-KMS_Discord_Bot).
+
+No warrenty or any kind of support on this. Do whatever you want with it.

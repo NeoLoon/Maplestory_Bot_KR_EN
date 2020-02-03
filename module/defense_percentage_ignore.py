@@ -31,12 +31,12 @@ def defense_percentage_ignore_main(msg):
             output = discord.Embed(title="Warning!!!", description='ied cannot be higher than 100%.', color=0xff0000)
             output.set_footer(text="#ied (ied 1) (ied 2)... (ied n)")
         else:
-            output = discord.Embed(title="ied %3.2f %% damage to a mob" % (defense_percentage_ignore * 100),
-                                   description="Damage to 100%% def. : %3.2f %%\n"
-                                               "Damage to 150%% def. : %3.2f %%\n"
-                                               "Damage to 200%% def. : %3.2f %%\n"
-                                               "Damage to 250%% def. : %3.2f %%\n"
-                                               "Damage to 300%% def. : %3.2f %%\n"
+            output = discord.Embed(title="%3.2f %% IED" % (defense_percentage_ignore * 100),
+                                   description="Damage to a mob with 100%% def. : %3.2f %%\n"
+                                               "Damage to a mob with 150%% def. : %3.2f %%\n"
+                                               "Damage to a mob with 200%% def. : %3.2f %%\n"
+                                               "Damage to a mob with 250%% def. : %3.2f %%\n"
+                                               "Damage to a mob with 300%% def. : %3.2f %%\n"
                                                % (defense_percentage_ignore1(defense_percentage_ignore, 1) * 100,
                                                   defense_percentage_ignore1(defense_percentage_ignore, 1.5) * 100,
                                                   defense_percentage_ignore1(defense_percentage_ignore, 2) * 100,
