@@ -7,6 +7,7 @@ from module.defense_percentage_ignore import *
 from module.level import *
 from module.information import *
 from module.gambling import *
+from module.UnityTrainingCenter import *
 
 client = discord.Client()
 
@@ -15,8 +16,7 @@ async def on_ready():
     print('Logged in as')
     print(client.user.name)
     print(client.user.id)
-    print('hello')
-    activity = discord.Game(name="#help for help")
+    activity = discord.Game(name="#help")
     await client.change_presence(status=discord.Status.idle, activity=activity)
 
 @client.event
@@ -66,6 +66,11 @@ async def on_message(message):
         msg = message.content.split(" ")
         display_name = message.author.display_name
         output = gambling_main(msg, display_name)
+        await message.channel.send(embed=output)
+
+    if message.content.startswith('#unity'):
+        msg = message.content.split(" ")
+        output = UnityTrainingCenter_main(msg)
         await message.channel.send(embed=output)
 
 client.run('token')
